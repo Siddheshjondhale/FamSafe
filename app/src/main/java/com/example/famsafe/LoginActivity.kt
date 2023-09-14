@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
 
                     val user = auth.currentUser
 
-                    Log.v("jhhj",user.toString());
+//                    Log.v("jhhj",user.toString());
 
 
 
