@@ -1,28 +1,11 @@
 package com.example.famsafe
 
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
-import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.famsafe.databinding.ActivityMainBinding
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                     inflateFragment(GuardFragment())
                 }
                 R.id.nav_profile -> {
-                    inflateFragment(GuardFragment())
+                    val i = Intent(applicationContext, LoginActivity::class.java)
+                    startActivity(i)
                 }
             }
 
