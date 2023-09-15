@@ -68,7 +68,11 @@ class LoginActivity : AppCompatActivity() {
 //                    SharedPref.putBoolean(PrefConstants.IS_USER_LOGGED_IN, true)
 
                     val user = auth.currentUser
+                    val userEmail = user?.email // Get the user's email
 
+                    if (userEmail != null) {
+                        Toast.makeText(this, "User email: $userEmail", Toast.LENGTH_SHORT).show()
+                    }
 //                    Log.v("jhhj",user.toString());
 
 
