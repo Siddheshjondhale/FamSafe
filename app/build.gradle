@@ -70,4 +70,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    //splash screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 }
