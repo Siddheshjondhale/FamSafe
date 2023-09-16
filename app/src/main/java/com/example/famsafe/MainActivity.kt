@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
                     inflateFragment(GuardFragment())
                 }
                 R.id.nav_profile -> {
-                    val i = Intent(applicationContext, LoginActivity::class.java)
-                    startActivity(i)
+                    inflateFragment(ProfileFragment())
+
                 }
             }
 
