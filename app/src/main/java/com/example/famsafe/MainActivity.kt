@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     val permissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
-
     )
     val permissionCode = 78
 
@@ -79,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     inflateFragment(HomeFragment())
                 }
                 R.id.nav_dashboard -> {
-                    inflateFragment(MapsFragment())
+                    inflateFragment(GuardFragment())
                 }
                 R.id.nav_guard -> {
                     inflateFragment(GuardFragment())
