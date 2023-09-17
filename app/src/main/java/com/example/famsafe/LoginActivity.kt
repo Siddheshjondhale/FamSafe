@@ -33,12 +33,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun signIn(view: android.view.View) {
-
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-
-
+        // Sign out the current user if they are signed in
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            // Start the sign-in intent after sign out
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
