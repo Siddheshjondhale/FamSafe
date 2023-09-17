@@ -96,6 +96,33 @@ class MainActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val mail = currentUser?.email.toString()
 
+//        val currentUser = FirebaseAuth.getInstance().currentUser
+        val name = currentUser?.displayName.toString()
+//        val mail = currentUser?.email.toString()
+        val phoneNumber = currentUser?.phoneNumber.toString()
+        val imageUrl = currentUser?.photoUrl.toString()
+
+
+        val db = Firebase.firestore
+
+        val user = hashMapOf(
+            "name" to name,
+            "mail" to mail,
+            "phoneNumber" to phoneNumber,
+            "imageUrl" to imageUrl
+
+        )
+
+
+        db.collection("users").document(mail).set(user).addOnSuccessListener {
+
+        }.addOnFailureListener {
+            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+            Log.d("testhaibhai",it.toString())
+        }
+
+
+
         // Register the BroadcastReceiver to listen for battery changes
         registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
@@ -247,7 +274,7 @@ class MainActivity : AppCompatActivity() {
                 // Successfully updated the battery percentage in the database
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
                 Log.d("testhaibhai", e.toString())
             }
     }
