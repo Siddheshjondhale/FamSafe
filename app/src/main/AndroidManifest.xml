@@ -26,6 +26,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+
         </activity> <!-- Declare MainActivity as well -->
         <activity
             android:name=".MainActivity"
