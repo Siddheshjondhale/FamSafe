@@ -105,11 +105,13 @@ class MainActivity : AppCompatActivity() {
         db.collection("users").document(mail).update(userMap)
             .addOnSuccessListener {
                 // Successfully updated the battery percentage in the database
+                Log.d("Success",it.toString())
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
                 Log.d("testhaibhai", e.toString())
             }
+
     }
 
 }
