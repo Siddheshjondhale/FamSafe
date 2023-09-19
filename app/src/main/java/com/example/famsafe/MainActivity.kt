@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        startLocationService()
+
+
 //        take permissions
         if (isAllPermissionsGranted()) {
             if (isLocationEnabled(this)) {
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     inflateFragment(HomeFragment())
                 }
                 R.id.nav_dashboard -> {
-                    inflateFragment(GuardFragment())
+                    inflateFragment(MapsFragment())
                 }
                 R.id.nav_guard -> {
                     inflateFragment(GuardFragment())
@@ -277,5 +280,14 @@ class MainActivity : AppCompatActivity() {
                 Log.d("testhaibhai", e.toString())
             }
     }
+
+
+
+//    location to update even when app is in background
+private fun startLocationService() {
+    val serviceIntent = Intent(this, LocationUpdateService::class.java)
+    ContextCompat.startForegroundService(this, serviceIntent)
+}
+
 
 }

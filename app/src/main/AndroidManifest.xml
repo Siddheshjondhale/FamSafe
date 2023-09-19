@@ -30,7 +30,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="AIzaSyBypZiMeiLeXEM4r8tSx6G9kn4SPKbqiek" />
 
         <activity
             android:name=".SplashScreen"
@@ -43,7 +43,7 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="true"></activity> <!-- Declare MainActivity as well -->
+            android:exported="true" /> <!-- Declare MainActivity as well -->
         <activity
             android:name=".MainActivity"
             android:exported="true" />
