@@ -127,6 +127,8 @@ override fun onAcceptClick(mail: String) {
             }.addOnFailureListener {
 
             }
+///write the code here
+    getInvites()
     }
 
   override  fun onDenyClick(mail: String) {
