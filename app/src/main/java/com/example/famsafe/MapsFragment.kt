@@ -38,7 +38,7 @@ class MapsFragment : Fragment() {
                     if (documentSnapshot.exists()) {
                         val latitude = (documentSnapshot.getString("lat"))?.toDouble()
                         val longitude = (documentSnapshot.getString("long"))?.toDouble()
-
+                        val name=(documentSnapshot.getString("name"))
                         if (latitude != null && longitude != null) {
                             // Print latitude and longitude
 
@@ -57,7 +57,7 @@ class MapsFragment : Fragment() {
 
                         if (latitude != null && longitude != null) {
                             val location = LatLng(latitude, longitude)
-                            googleMap.addMarker(MarkerOptions().position(location).title("Marker"))
+                            googleMap.addMarker(MarkerOptions().position(location).title(name))
                             googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
                         }
 
