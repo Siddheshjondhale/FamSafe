@@ -98,7 +98,7 @@ class GuardFragment : Fragment(), InviteMailAdapter.OnActionClick {
             }.addOnFailureListener {
 
             }
-
+    Toast.makeText(requireContext() ,"Invite send", Toast.LENGTH_SHORT).show()
     }
 //
 //    companion object {
