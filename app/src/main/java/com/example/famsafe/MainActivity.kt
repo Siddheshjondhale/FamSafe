@@ -57,20 +57,26 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        startLocationService()
+        // Register the BroadcastReceiver to listen for battery changes
+        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
+        // Initialize the initial battery percentage in the database
+        var batteryPercentage = getBatteryPercentage()
+        updateBatteryPercentageInDatabase(batteryPercentage)
 
-//        take permissions
+        // Set up location updates before checking for permissions
+        setUpLocationListener()
+
+        // Check for location permissions and GPS status
         if (isAllPermissionsGranted()) {
             if (isLocationEnabled(this)) {
-                setUpLocationListener()
+                // Location permissions are granted and GPS is enabled, continue
             } else {
                 showGPSNotEnabledDialog(this)
             }
         } else {
             askForPermission()
         }
-
 
 
 
@@ -129,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
         // Initialize the initial battery percentage in the database
-        val batteryPercentage = getBatteryPercentage()
+         batteryPercentage = getBatteryPercentage()
         updateBatteryPercentageInDatabase(batteryPercentage)
     }
 
@@ -228,8 +234,11 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton("enable_now") { _, _ ->
                 context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+
             }
             .show()
+//write code here
+
     }
 
 
@@ -288,6 +297,10 @@ private fun startLocationService() {
     val serviceIntent = Intent(this, LocationUpdateService::class.java)
     ContextCompat.startForegroundService(this, serviceIntent)
 }
+
+
+
+
 
 
 }

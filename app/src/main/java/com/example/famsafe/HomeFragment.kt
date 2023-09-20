@@ -39,6 +39,7 @@ class HomeFragment : Fragment() {
                 "", // Initialize the battery percentage field as empty
                 "220"
             ),
+
             // Add other members here...
         )
 
