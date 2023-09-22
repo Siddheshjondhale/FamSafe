@@ -1,5 +1,6 @@
 package com.example.famsafe
 
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.famsafe.databinding.FragmentHomeBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,42 +35,127 @@ class HomeFragment : Fragment() {
 
         val mContext = requireContext()
 
-        listMembers = mutableListOf(
-            MemberModel(
-                "Lokesh",
-                "9th building, 2nd floor, Maldiv Road, Manali",
-                "", // Initialize the battery percentage field as empty
-                "220"
-            ),
-
-            // Add other members here...
-        )
-
         val adapter = MemberAdapter(listMembers)
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userEmail = currentUser?.email
+        if (userEmail != null) {
+            val firestore = FirebaseFirestore.getInstance()
+            val usersCollection = firestore.collection("users")
+            val userDocument = usersCollection.document(userEmail)
+
+            userDocument.get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        var latitude = ((documentSnapshot.getString("lat"))?.toDouble()) ?: 0.0
+                        var longitude = ((documentSnapshot.getString("long"))?.toDouble()) ?: 0.0
+                        var batteryinfo = documentSnapshot.getString("battery")
+                        listMembers.clear()
+                        listMembers.add(
+                            MemberModel(
+                                currentUser.displayName.toString(),
+                                convertCoordinatesToAddress(latitude, longitude),
+                                batteryinfo.toString(),
+                                "220"
+                            )
+                        )
+
+                        val invitesCollection = userDocument.collection("invites")
+                        invitesCollection.whereEqualTo("invite_status", 1)
+                            .get()
+                            .addOnSuccessListener { invitesQuerySnapshot ->
+                                for (inviteDocument in invitesQuerySnapshot.documents) {
+                                    val otherUserEmail = inviteDocument.id
+                                    val otherUserDoc = firestore.collection("users")
+                                        .document(otherUserEmail)
+
+                                    otherUserDoc.get()
+                                        .addOnSuccessListener { otherUserSnapshot ->
+                                            if (otherUserSnapshot.exists()) {
+                                                val otherUserName =
+                                                    otherUserSnapshot.getString("name")
+                                                        ?: "Unknown"
+                                                val otherUserLatitude =
+                                                    otherUserSnapshot.getString("lat")?.toDouble()
+                                                        ?: 0.0
+                                                val otherUserLongitude =
+                                                    otherUserSnapshot.getString("long")?.toDouble()
+                                                        ?: 0.0
+                                                var otheruserbattery= otherUserSnapshot.getString("battery")
+                                                listMembers.add(
+                                                    MemberModel(
+                                                        otherUserName,
+                                                        convertCoordinatesToAddress(
+                                                            otherUserLatitude,
+                                                            otherUserLongitude
+                                                        ),
+                                                        otheruserbattery.toString(), // Initialize the battery percentage field as empty
+                                                        "220" // Replace with the actual field name
+                                                    )
+                                                )
+
+                                                adapter.notifyDataSetChanged()
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // Handle errors while fetching other user data
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                // Handle errors while fetching invites
+                            }
+                    } else {
+                        // Handle the case where the user's document doesn't exist
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Handle any errors that occur while fetching data from Firestore
+                }
+        }
 
         binding.recyclerMember.layoutManager = LinearLayoutManager(mContext)
         binding.recyclerMember.adapter = adapter
 
-        // Create and observe the battery percentage
         batteryPercentageListener = BatteryPercentageListener(mContext)
 
         batteryPercentageListener.observe(viewLifecycleOwner, Observer { batteryPercentage ->
-            // Create a new list with updated battery percentage
             val updatedListMembers = listMembers.map { member ->
                 MemberModel(
                     member.name,
                     member.address,
                     "$batteryPercentage%",
-                    member.distance // Replace with the actual field name
+                    member.distance
                 )
             }
 
-            // Update the reference to the new list
             listMembers.clear()
             listMembers.addAll(updatedListMembers)
-
-            // Notify the adapter that the data has changed
             adapter.notifyDataSetChanged()
         })
     }
+
+
+    //convert the coordinate into  addresss
+    private fun convertCoordinatesToAddress(latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(requireContext())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+
+        if (addresses?.isNotEmpty() == true) {
+            val address = addresses?.get(0)
+            val fullAddress = address?.getAddressLine(0)
+
+            // Use fullAddress as the address in your application
+            return fullAddress ?: "Address not found" // Return fullAddress or a default message
+        } else {
+            // Handle the case where no address was found for the given coordinates
+            return "Address not found" // Return a default message
+        }
+    }
+
+
+
+
 }
+
+
