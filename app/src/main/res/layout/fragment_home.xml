@@ -35,6 +35,7 @@
         android:layout_height="24dp"
         android:layout_margin="@dimen/dimen_16"
         android:src="@drawable/ic_more"
+        android:onClick="reloadFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

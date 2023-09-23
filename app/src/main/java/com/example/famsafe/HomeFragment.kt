@@ -11,10 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.famsafe.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -43,13 +39,13 @@ class HomeFragment : Fragment() {
             val firestore = FirebaseFirestore.getInstance()
             val usersCollection = firestore.collection("users")
             val userDocument = usersCollection.document(userEmail)
-
+            var batteryinfo:String?=null;
             userDocument.get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         var latitude = ((documentSnapshot.getString("lat"))?.toDouble()) ?: 0.0
                         var longitude = ((documentSnapshot.getString("long"))?.toDouble()) ?: 0.0
-                        var batteryinfo = documentSnapshot.getString("battery")
+                        batteryinfo = documentSnapshot.getString("battery")
                         listMembers.clear()
                         listMembers.add(
                             MemberModel(
@@ -120,15 +116,18 @@ class HomeFragment : Fragment() {
         batteryPercentageListener = BatteryPercentageListener(mContext)
 
         batteryPercentageListener.observe(viewLifecycleOwner, Observer { batteryPercentage ->
-            val updatedListMembers = listMembers.map { member ->
-                MemberModel(
-                    member.name,
-                    member.address,
-                    "$batteryPercentage%",
-                    member.distance
-                )
+            val updatedListMembers = listMembers.mapIndexed { index, member ->
+                if (index == 0) {
+                    MemberModel(
+                        member.name,
+                        member.address,
+                        "$batteryPercentage%",
+                        member.distance
+                    )
+                } else {
+                    member // Keep the other members unchanged
+                }
             }
-
             listMembers.clear()
             listMembers.addAll(updatedListMembers)
             adapter.notifyDataSetChanged()
@@ -154,6 +153,12 @@ class HomeFragment : Fragment() {
     }
 
 
+//    fun reloadFragment(view: View?) {
+//        // Add your code here to reload the fragment's content
+//        // You can use FragmentManager to replace the current fragment with a new instance of itself
+//        val transaction = requireFragmentManager().beginTransaction()
+//        transaction.detach(this).attach(this).commit()
+//    }
 
 
 }
