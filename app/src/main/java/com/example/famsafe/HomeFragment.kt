@@ -29,6 +29,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+            var batteryinfo:String?=null;
         val mContext = requireContext()
 
         val adapter = MemberAdapter(listMembers)
@@ -39,7 +40,6 @@ class HomeFragment : Fragment() {
             val firestore = FirebaseFirestore.getInstance()
             val usersCollection = firestore.collection("users")
             val userDocument = usersCollection.document(userEmail)
-            var batteryinfo:String?=null;
             userDocument.get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
@@ -137,20 +137,32 @@ class HomeFragment : Fragment() {
 
     //convert the coordinate into  addresss
     private fun convertCoordinatesToAddress(latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(requireContext())
-        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        val context = context
+        if (context != null) {
+            val geocoder = Geocoder(context)
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
 
-        if (addresses?.isNotEmpty() == true) {
-            val address = addresses?.get(0)
-            val fullAddress = address?.getAddressLine(0)
+            if (addresses?.isNotEmpty() == true) {
+                val address = addresses[0]
+                val fullAddress = address.getAddressLine(0)
 
-            // Use fullAddress as the address in your application
-            return fullAddress ?: "Address not found" // Return fullAddress or a default message
+                // Use fullAddress as the address in your application
+                return fullAddress ?: "Address not found" // Return fullAddress or a default message
+            } else {
+                // Handle the case where no address was found for the given coordinates
+                return "Address not found" // Return a default message
+            }
         } else {
-            // Handle the case where no address was found for the given coordinates
-            return "Address not found" // Return a default message
+            // Handle the case where the fragment is not attached to a context
+            return "Context not available"
         }
     }
+
+
+//    fun reloadFragment(view: View) {
+//
+//
+//    }
 
 
 //    fun reloadFragment(view: View?) {

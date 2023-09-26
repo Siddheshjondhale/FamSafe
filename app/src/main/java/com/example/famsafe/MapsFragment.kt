@@ -24,8 +24,9 @@ class MapsFragment : Fragment() {
         val currentUser = auth.currentUser
         if (currentUser != null) {
             val userEmail = currentUser.email
-            Toast.makeText(requireContext(), userEmail, Toast.LENGTH_SHORT).show()
-
+            if (context != null) {
+                Toast.makeText(context, userEmail, Toast.LENGTH_SHORT).show()
+            }
             // Initialize Firestore
             val db = FirebaseFirestore.getInstance()
 
@@ -52,9 +53,10 @@ class MapsFragment : Fragment() {
                             print("lol")
 
                         }
-                        Toast.makeText(requireContext(), latitude.toString(), Toast.LENGTH_SHORT).show()
-                            Toast.makeText(requireContext(), longitude.toString(), Toast.LENGTH_SHORT).show()
-
+                        if (context != null) {
+                            Toast.makeText(context, latitude.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, longitude.toString(), Toast.LENGTH_SHORT).show()
+                        }
                         if (latitude != null && longitude != null) {
                             val location = LatLng(latitude, longitude)
                             googleMap.addMarker(MarkerOptions().position(location).title(name))
