@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.famsafe.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 class ProfileFragment : Fragment() {
@@ -69,6 +71,61 @@ class ProfileFragment : Fragment() {
 
 
 
+
+        var Edittextphone=view.findViewById<EditText>(R.id.Edittextphone)
+        var sendsmsboy=view.findViewById<Button>(R.id.sendsmsboy)
+
+            sendsmsboy.setOnClickListener{
+                var newPhoneNumber=Edittextphone.text.toString().trim()
+
+                if (newPhoneNumber.isNotEmpty()) {
+                    // Update the phone number in Firestore
+                    updatePhoneNumberInFirestore(newPhoneNumber)
+                } else {
+                    Toast.makeText(activity, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+
         return view
     }
+
+    private fun updatePhoneNumberInFirestore(newPhoneNumber: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val db = FirebaseFirestore.getInstance()
+
+        currentUser?.let { user ->
+            val userEmail = user.email
+
+            if (userEmail != null) {
+                // Assuming you have a "users" collection in Firestore
+                val userRef = db.collection("users").document(userEmail)
+
+                // Update the "phonenumber" field in the user's document
+                userRef.update("phoneNumber", newPhoneNumber)
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            activity,
+                            "Phone number updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            activity,
+                            "Failed to update phone number: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+        }
+    }
+
+
+
+
+
+
+
 }
