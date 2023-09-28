@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,10 +30,40 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            var batteryinfo:String?=null;
+        var batteryinfo: String? = null
         val mContext = requireContext()
 
-        val adapter = MemberAdapter(listMembers)
+        val adapter = MemberAdapter(listMembers) { position ->
+            // Handle the item click event here
+            val clickedMember = listMembers[position]
+            val otherUserEmail =clickedMember.emailval
+//            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            val firestore = FirebaseFirestore.getInstance()
+            val usersCollection = firestore.collection("users")
+            val userDocument = usersCollection.document(otherUserEmail)
+
+    userDocument.get().addOnSuccessListener { documentSnapshort->
+
+        if (documentSnapshort.exists()){
+            var latitude = ((documentSnapshort.getString("lat"))?.toDouble()) ?: 0.0
+            var longitude = ((documentSnapshort.getString("long"))?.toDouble()) ?: 0.0
+            var name=(documentSnapshort.getString("name"))
+//code to create a bundle and pass to the mapfragment
+            val bundle = Bundle()
+            bundle.putDouble("otherLat", latitude)
+            bundle.putDouble("otherLong", longitude)
+            bundle.putString("otherName",name)
+            val mapsFragment = MapsFragment()
+            mapsFragment.arguments = bundle
+             val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, mapsFragment)
+            transaction.addToBackStack(null) // Optional: Add to back stack if needed
+            transaction.commit()
+
+        }
+    }
+
+        }
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userEmail = currentUser?.email
@@ -52,7 +83,8 @@ class HomeFragment : Fragment() {
                                 currentUser.displayName.toString(),
                                 convertCoordinatesToAddress(latitude, longitude),
                                 batteryinfo.toString(),
-                                "220"
+                                "220",
+                                userEmail
                             )
                         )
 
@@ -68,16 +100,15 @@ class HomeFragment : Fragment() {
                                     otherUserDoc.get()
                                         .addOnSuccessListener { otherUserSnapshot ->
                                             if (otherUserSnapshot.exists()) {
-                                                val otherUserName =
-                                                    otherUserSnapshot.getString("name")
-                                                        ?: "Unknown"
-                                                val otherUserLatitude =
-                                                    otherUserSnapshot.getString("lat")?.toDouble()
-                                                        ?: 0.0
-                                                val otherUserLongitude =
-                                                    otherUserSnapshot.getString("long")?.toDouble()
-                                                        ?: 0.0
-                                                var otheruserbattery= otherUserSnapshot.getString("battery")
+                                                val otherUserName =otherUserSnapshot.getString("name")?: "Unknown"
+
+                                                var otherUserLatitude =
+                                                    otherUserSnapshot.getString("lat")?.toDouble() ?: 0.0
+                                                var otherUserLongitude =
+                                                    otherUserSnapshot.getString("long")?.toDouble() ?: 0.0
+
+                                                var otheruserbattery =
+                                                    otherUserSnapshot.getString("battery")
                                                 listMembers.add(
                                                     MemberModel(
                                                         otherUserName,
@@ -85,8 +116,10 @@ class HomeFragment : Fragment() {
                                                             otherUserLatitude,
                                                             otherUserLongitude
                                                         ),
-                                                        otheruserbattery.toString(), // Initialize the battery percentage field as empty
-                                                        "220" // Replace with the actual field name
+                                                        otheruserbattery.toString(),
+                                                        "220",
+                                                        otherUserEmail,
+
                                                     )
                                                 )
 
@@ -122,7 +155,8 @@ class HomeFragment : Fragment() {
                         member.name,
                         member.address,
                         "$batteryPercentage%",
-                        member.distance
+                        member.distance,
+                        member.emailval,
                     )
                 } else {
                     member // Keep the other members unchanged
@@ -134,8 +168,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-
-    //convert the coordinate into  addresss
+    //convert the coordinate into  address
     private fun convertCoordinatesToAddress(latitude: Double, longitude: Double): String {
         val context = context
         if (context != null) {
@@ -157,22 +190,4 @@ class HomeFragment : Fragment() {
             return "Context not available"
         }
     }
-
-
-//    fun reloadFragment(view: View) {
-//
-//
-//    }
-
-
-//    fun reloadFragment(view: View?) {
-//        // Add your code here to reload the fragment's content
-//        // You can use FragmentManager to replace the current fragment with a new instance of itself
-//        val transaction = requireFragmentManager().beginTransaction()
-//        transaction.detach(this).attach(this).commit()
-//    }
-
-
 }
-
-

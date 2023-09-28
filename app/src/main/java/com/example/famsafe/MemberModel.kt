@@ -5,4 +5,5 @@ data class MemberModel(
     val address:String,
     val battery:String,
     val distance:String,
+    val emailval:String,
 )

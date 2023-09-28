@@ -133,6 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="223M"
+
                 android:textColor="@android:color/darker_gray"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/img_battery"
@@ -174,6 +175,22 @@
                 app:layout_constraintBottom_toBottomOf="@id/img_battery"
                 app:layout_constraintStart_toEndOf="@id/img_wifi"
                 app:layout_constraintTop_toTopOf="@id/img_battery" />
+
+
+            <TextView
+                android:id="@+id/emailval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="WiFi"
+                android:visibility="gone"
+                android:textColor="@android:color/darker_gray"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/img_battery"
+                app:layout_constraintStart_toEndOf="@id/img_wifi"
+                app:layout_constraintTop_toTopOf="@id/img_battery" />
+
+
         </LinearLayout>
 
 
