@@ -7,4 +7,5 @@ data class MemberModel(
     val distance:String,
     val emailval:String,
     val sms:String,
+//    val Stopsos:String,
 )

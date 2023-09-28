@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 class MemberAdapter(
     private val listMembers: List<MemberModel>,
     private val onDistanceClick: (position: Int) -> Unit,
-    private val onSmsClick: (position: Int) -> Unit
+    private val onSmsClick: (position: Int) -> Unit,
+    private val onStopsosclick: (position: Int) -> Unit
 
 ) : RecyclerView.Adapter<MemberAdapter.ViewHolder>() {
 
@@ -29,6 +30,7 @@ class MemberAdapter(
         holder.distance.text = item.distance
         holder.emailval.text=item.emailval
         holder.sms
+        holder.Stopsos
         // Set click listener for the entire item
         holder.distance.setOnClickListener {
             onDistanceClick(position)
@@ -37,6 +39,9 @@ class MemberAdapter(
             onSmsClick(position)
         }
 
+        holder.Stopsos.setOnClickListener{
+            onStopsosclick(position)
+        }
 
     }
 
@@ -54,5 +59,6 @@ class MemberAdapter(
         val distance = item.findViewById<TextView>(R.id.distance_value)
         val emailval=item.findViewById<TextView>(R.id.emailval)
         val sms=item.findViewById<ImageView>(R.id.sms)
+        val Stopsos=item.findViewById<ImageView>(R.id.Stopsos)
     }
 }

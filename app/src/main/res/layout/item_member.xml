@@ -156,7 +156,7 @@
 
 
             <ImageView
-                android:id="@+id/img_wifi"
+                android:id="@+id/Stopsos"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_wifi"
@@ -164,17 +164,6 @@
                 app:layout_constraintTop_toBottomOf="@id/img_user"
                 app:tint="@color/green" />
 
-            <TextView
-                android:id="@+id/wifi_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="WiFi"
-                android:textColor="@android:color/darker_gray"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/img_battery"
-                app:layout_constraintStart_toEndOf="@id/img_wifi"
-                app:layout_constraintTop_toTopOf="@id/img_battery" />
 
 
             <TextView
@@ -187,7 +176,7 @@
                 android:textColor="@android:color/darker_gray"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/img_battery"
-                app:layout_constraintStart_toEndOf="@id/img_wifi"
+                app:layout_constraintStart_toEndOf="@id/Stopsos"
                 app:layout_constraintTop_toTopOf="@id/img_battery" />
 
 
