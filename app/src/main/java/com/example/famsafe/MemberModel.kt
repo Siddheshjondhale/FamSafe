@@ -6,4 +6,5 @@ data class MemberModel(
     val battery:String,
     val distance:String,
     val emailval:String,
+    val sms:String,
 )

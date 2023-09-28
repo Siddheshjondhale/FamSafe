@@ -1,17 +1,27 @@
 package com.example.famsafe
 
+import android.Manifest
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
+import android.telephony.SmsManager
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.famsafe.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.sql.Types.NULL
+
 
 class HomeFragment : Fragment() {
 
@@ -33,37 +43,76 @@ class HomeFragment : Fragment() {
         var batteryinfo: String? = null
         val mContext = requireContext()
 
-        val adapter = MemberAdapter(listMembers) { position ->
-            // Handle the item click event here
-            val clickedMember = listMembers[position]
-            val otherUserEmail =clickedMember.emailval
+        val adapter = MemberAdapter(listMembers,
+            onDistanceClick = { position ->
+                // Handle the item click event here
+                val clickedMember = listMembers[position]
+                val otherUserEmail =clickedMember.emailval
 //            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            val firestore = FirebaseFirestore.getInstance()
-            val usersCollection = firestore.collection("users")
-            val userDocument = usersCollection.document(otherUserEmail)
+                val firestore = FirebaseFirestore.getInstance()
+                val usersCollection = firestore.collection("users")
+                val userDocument = usersCollection.document(otherUserEmail)
 
-    userDocument.get().addOnSuccessListener { documentSnapshort->
+                userDocument.get().addOnSuccessListener { documentSnapshort->
 
-        if (documentSnapshort.exists()){
-            var latitude = ((documentSnapshort.getString("lat"))?.toDouble()) ?: 0.0
-            var longitude = ((documentSnapshort.getString("long"))?.toDouble()) ?: 0.0
-            var name=(documentSnapshort.getString("name"))
+                    if (documentSnapshort.exists()){
+                        var latitude = ((documentSnapshort.getString("lat"))?.toDouble()) ?: 0.0
+                        var longitude = ((documentSnapshort.getString("long"))?.toDouble()) ?: 0.0
+                        var name=(documentSnapshort.getString("name"))
 //code to create a bundle and pass to the mapfragment
-            val bundle = Bundle()
-            bundle.putDouble("otherLat", latitude)
-            bundle.putDouble("otherLong", longitude)
-            bundle.putString("otherName",name)
-            val mapsFragment = MapsFragment()
-            mapsFragment.arguments = bundle
-             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, mapsFragment)
-            transaction.addToBackStack(null) // Optional: Add to back stack if needed
-            transaction.commit()
+                        val bundle = Bundle()
+                        bundle.putDouble("otherLat", latitude)
+                        bundle.putDouble("otherLong", longitude)
+                        bundle.putString("otherName",name)
+                        val mapsFragment = MapsFragment()
+                        mapsFragment.arguments = bundle
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.container, mapsFragment)
+                        transaction.addToBackStack(null) // Optional: Add to back stack if needed
+                        transaction.commit()
 
-        }
+                    }
+                }
+
+            },
+            onSmsClick = { position ->
+                // Handle sms click here
+                
+                Toast.makeText(requireContext(), "lolsms", Toast.LENGTH_SHORT).show()
+                    if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED)
+                    {
+                        val clickedMember = listMembers[position]
+                        val otherUserEmail =clickedMember.emailval
+//            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        val firestore = FirebaseFirestore.getInstance()
+                        val usersCollection = firestore.collection("users")
+                        val userDocument = usersCollection.document(otherUserEmail)
+
+                        userDocument.get().addOnSuccessListener{documentsnapshort->
+                            if (documentsnapshort.exists()){
+                                var phoneNumber = (documentsnapshort.getString("phoneNumber"))
+                                sendSMS(phoneNumber)
+                            }
+                        }
+
+
+
+
+                     } else {
+        // Permission is not granted, request it
+                  ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.SEND_SMS),
+                      SMS_PERMISSION_REQUEST_CODE
+        )
     }
+                
+            }
+        )
 
-        }
+
+
+
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userEmail = currentUser?.email
@@ -84,7 +133,8 @@ class HomeFragment : Fragment() {
                                 convertCoordinatesToAddress(latitude, longitude),
                                 batteryinfo.toString(),
                                 "220",
-                                userEmail
+                                userEmail,
+                                NULL.toString(),
                             )
                         )
 
@@ -119,6 +169,7 @@ class HomeFragment : Fragment() {
                                                         otheruserbattery.toString(),
                                                         "220",
                                                         otherUserEmail,
+                                                        NULL.toString(),
 
                                                     )
                                                 )
@@ -157,7 +208,9 @@ class HomeFragment : Fragment() {
                         "$batteryPercentage%",
                         member.distance,
                         member.emailval,
-                    )
+                        NULL.toString(),
+
+                        )
                 } else {
                     member // Keep the other members unchanged
                 }
@@ -167,6 +220,29 @@ class HomeFragment : Fragment() {
             adapter.notifyDataSetChanged()
         })
     }
+
+    private fun sendSMS(phoneNumber: String?) {
+    try {
+        val smsManager = SmsManager.getDefault()
+        val sentIntent = PendingIntent.getBroadcast(
+            requireContext(), 0, Intent("SMS_SENT"), 0
+        )
+
+        // Send the SMS
+        smsManager.sendTextMessage(phoneNumber, null, "Help Help Check My last location", sentIntent, null)
+
+        // Show a toast message indicating that the SMS has been sent
+        Toast.makeText(requireContext(), "SMS sent successfully", Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        // Handle exceptions here
+        e.printStackTrace()
+        // Show a toast message if there's an error
+        Toast.makeText(requireContext(), "Failed to send SMS", Toast.LENGTH_SHORT).show()
+    }
+}
+    companion object {
+    private const val SMS_PERMISSION_REQUEST_CODE = 123
+}
 
     //convert the coordinate into  address
     private fun convertCoordinatesToAddress(latitude: Double, longitude: Double): String {

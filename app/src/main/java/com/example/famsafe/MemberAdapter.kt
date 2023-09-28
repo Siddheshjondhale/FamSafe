@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MemberAdapter(
     private val listMembers: List<MemberModel>,
-    private val onItemClick: (position: Int) -> Unit
+    private val onDistanceClick: (position: Int) -> Unit,
+    private val onSmsClick: (position: Int) -> Unit
+
 ) : RecyclerView.Adapter<MemberAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,12 +28,19 @@ class MemberAdapter(
         holder.battery.text = item.battery
         holder.distance.text = item.distance
         holder.emailval.text=item.emailval
-
+        holder.sms
         // Set click listener for the entire item
         holder.distance.setOnClickListener {
-            onItemClick(position)
+            onDistanceClick(position)
         }
+        holder.sms.setOnClickListener {
+            onSmsClick(position)
+        }
+
+
     }
+
+
 
     override fun getItemCount(): Int {
         return listMembers.size
@@ -44,5 +53,6 @@ class MemberAdapter(
         val battery = item.findViewById<TextView>(R.id.battery_percent)
         val distance = item.findViewById<TextView>(R.id.distance_value)
         val emailval=item.findViewById<TextView>(R.id.emailval)
+        val sms=item.findViewById<ImageView>(R.id.sms)
     }
 }
