@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_180"
         android:layout_margin="@dimen/dimen_16"
+        android:visibility="gone"
         app:cardBackgroundColor="@color/pink"
         app:cardCornerRadius="@dimen/dimen_16"
         app:cardElevation="@dimen/dimen_16"
@@ -34,6 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_16"
         android:elevation="@dimen/dimen_16"
+        android:visibility="gone"
+
         android:text="@string/sos"
         android:textColor="@color/white"
         android:textSize="@dimen/dimen_24"
@@ -47,6 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_16"
         android:elevation="@dimen/dimen_16"
+        android:visibility="gone"
+
         android:text="@string/in_case_of_emergency_keep_telling_family_members_to_contact_me"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@id/sos_img"
@@ -58,6 +63,8 @@
         android:layout_width="@dimen/dimen_96"
         android:layout_height="@dimen/dimen_96"
         android:layout_margin="@dimen/dimen_16"
+        android:visibility="gone"
+
         android:elevation="@dimen/dimen_16"
         android:src="@drawable/ic_sos"
         app:layout_constraintBottom_toBottomOf="@id/pink_card"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyFamily</string>
+    <string name="app_name">FamSafe</string>
     <string name="security">Security</string>
     <string name="sos">SOS</string>
     <string name="home">Home</string>
