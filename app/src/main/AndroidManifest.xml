@@ -31,7 +31,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBypZiMeiLeXEM4r8tSx6G9kn4SPKbqiek" />
+            android:value="YOUR_GOOGLE_MAPS_API_KEY" />
 
         <activity
             android:name=".SplashScreen"
