@@ -10,7 +10,7 @@ PostgreSQL: Relational database management system ensuring robust data storage a
 
 ## Microservices
 User Auth Service: [GitHub Repository](https://github.com/Siddheshjondhale/userAuthentication)
-Invitation Service: [GitHub Repository](https://github.com/Siddheshjondhale/Invitations)
+Invitation Service: [GitHub Repository]([https://github.com/Siddheshjondhale/Invitations](https://github.com/Siddheshjondhale/InvitationServiceModule/tree/dev))
 
 
 ## Key Features
