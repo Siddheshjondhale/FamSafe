@@ -9,9 +9,8 @@ Java Spring Boot: Backend framework facilitating the development of microservice
 PostgreSQL: Relational database management system ensuring robust data storage and management.
 
 ## Microservices
-User Auth Service: [GitHub Repository](https://github.com/Siddheshjondhale/userAuthentication)
-Invitation Service: [GitHub Repository]([https://github.com/Siddheshjondhale/Invitations](https://github.com/Siddheshjondhale/InvitationServiceModule/tree/dev))
-
+- **User Auth Service**: [GitHub Repository](https://github.com/Siddheshjondhale/userAuthentication)
+- **Invitation Service**: [GitHub Repository](https://github.com/Siddheshjondhale/InvitationServiceModule/tree/dev)
 
 ## Key Features
 - Developed a Family Safety app for Android using Kotlin, with a backend built in Java Spring Boot utilizing a microservices architecture for distinct services, ensuring high scalability and maintainability.
